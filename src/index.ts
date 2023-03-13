@@ -1,4 +1,15 @@
-import { access, constants, readFile, rm, writeFile } from 'fs/promises';
+import { MakeDirectoryOptions, ObjectEncodingOptions, RmDirOptions } from 'fs';
+import {
+  access,
+  constants,
+  lstat,
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+  rmdir,
+  writeFile,
+} from 'fs/promises';
 import { join } from 'path';
 import { SavimProviderInterface } from 'savim';
 import { Stream } from 'stream';
@@ -40,6 +51,20 @@ export interface SavimLocalDeleteFileParam {
 export interface SavimLocalProviderConfig {
   rootFolderPath: string;
 }
+
+export type SavimLocalCreateFolderParam = MakeDirectoryOptions;
+export type SavimLocalDeleteFolderParam = RmDirOptions;
+export type SavimLocalGetFoldersParam =
+  | (ObjectEncodingOptions & {
+      withFileTypes?: false | undefined;
+    })
+  | BufferEncoding
+  | null;
+
+export type SavimLocalGetFilesParam =
+  | ObjectEncodingOptions
+  | BufferEncoding
+  | null;
 
 export class SavimLocalProvider implements SavimProviderInterface {
   name = 'local';
@@ -92,5 +117,58 @@ export class SavimLocalProvider implements SavimProviderInterface {
     params?: SavimLocalDeleteFileParam,
   ) {
     return rm(join(this.config.rootFolderPath, filenameWithPath), params);
+  }
+
+  async createFolder(path: string, params: SavimLocalCreateFolderParam) {
+    return mkdir(join(this.config.rootFolderPath, path), params);
+  }
+
+  async deleteFolder(
+    path: string,
+    params: SavimLocalDeleteFolderParam,
+  ): Promise<void> {
+    return rmdir(join(this.config.rootFolderPath, path), params);
+  }
+
+  private async checkIfPathIsFolder(path: string) {
+    return (await lstat(path)).isDirectory();
+  }
+
+  async getFolders(
+    path: string,
+    params: SavimLocalGetFoldersParam,
+  ): Promise<string[]> {
+    const list = await readdir(join(this.config.rootFolderPath, path), params);
+
+    return (
+      await Promise.all(
+        list.map(async (itemPath) =>
+          (await this.checkIfPathIsFolder(
+            join(this.config.rootFolderPath, itemPath),
+          ))
+            ? join(path, itemPath)
+            : undefined,
+        ),
+      )
+    ).filter((p) => p !== undefined) as string[];
+  }
+
+  async getFiles(
+    path: string,
+    params: SavimLocalGetFoldersParam,
+  ): Promise<string[]> {
+    const list = await readdir(join(this.config.rootFolderPath, path), params);
+
+    return (
+      await Promise.all(
+        list.map(async (itemPath) =>
+          (await this.checkIfPathIsFolder(
+            join(this.config.rootFolderPath, itemPath),
+          ))
+            ? undefined
+            : join(path, itemPath),
+        ),
+      )
+    ).filter((p) => p !== undefined) as string[];
   }
 }

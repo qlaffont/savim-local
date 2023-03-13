@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { access, constants, readFile, rm, writeFile } from 'fs/promises';
+import {
+  access,
+  constants,
+  mkdir,
+  readFile,
+  rm,
+  rmdir,
+  writeFile,
+} from 'fs/promises';
 import path from 'path';
 const Readable = require('stream').Readable;
 import { Savim } from 'savim';
@@ -134,5 +142,83 @@ describe('Savim Local', () => {
     await savim.deleteFile(fileName);
 
     await expect(access(fullPath, constants.F_OK)).rejects.toThrow();
+  });
+
+  it('should be able to create folder', async () => {
+    const savim = new Savim();
+
+    await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
+      rootFolderPath: __dirname,
+    });
+
+    const fileName = 'foldertocreate';
+    const fullPath = path.join(__dirname, fileName);
+
+    await savim.createFolder(fileName);
+
+    await access(fullPath, constants.F_OK);
+
+    await rmdir(fullPath);
+  });
+
+  it('should be able to delete folder', async () => {
+    const savim = new Savim();
+
+    await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
+      rootFolderPath: __dirname,
+    });
+
+    const fileName = 'foldertodelete';
+    const fullPath = path.join(__dirname, fileName);
+
+    await mkdir(fullPath);
+    await savim.deleteFolder(fileName);
+    await expect(access(fullPath, constants.F_OK)).rejects.toThrow();
+  });
+
+  it('should be able to list folder', async () => {
+    const savim = new Savim();
+
+    await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
+      rootFolderPath: __dirname,
+    });
+
+    const fileNameFolder = 'foldertoget';
+    const fullPathFolder = path.join(__dirname, fileNameFolder);
+    const fileNameFile = 'filenottoget.txt';
+    const fullPathFile = path.join(__dirname, fileNameFile);
+
+    await mkdir(fullPathFolder);
+    await writeFile(fullPathFile, 'test');
+
+    await expect(await savim.getFolders('/')).toContain('/foldertoget');
+    await expect(await savim.getFolders('/')).not.toContain(
+      '/filenottoget.txt',
+    );
+
+    await rm(fullPathFile);
+    await rmdir(fullPathFolder);
+  });
+
+  it('should be able to list file', async () => {
+    const savim = new Savim();
+
+    await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
+      rootFolderPath: __dirname,
+    });
+
+    const fileNameFolder = 'foldertonotget';
+    const fullPathFolder = path.join(__dirname, fileNameFolder);
+    const fileNameFile = 'filetoget.txt';
+    const fullPathFile = path.join(__dirname, fileNameFile);
+
+    await mkdir(fullPathFolder);
+    await writeFile(fullPathFile, 'test');
+
+    await expect(await savim.getFiles('/')).toContain('/filetoget.txt');
+    await expect(await savim.getFiles('/')).not.toContain('/foldertonotget');
+
+    await rm(fullPathFile);
+    await rmdir(fullPathFolder);
   });
 });
