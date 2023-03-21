@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.11 (2023-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency savim to v1.1.6 ([b7418a1](https://github.com/flexper/savim-local/commit/b7418a128870ffb97ba9974fe7d4b7471fbedf75))
+
 ### 1.1.10 (2023-03-21)
 
 ### 1.1.9 (2023-03-21)
