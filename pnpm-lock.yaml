@@ -15,7 +15,7 @@ specifiers:
   jest: ^29.4.3
   np: 7.6.4
   prettier: 2.8.7
-  savim: 1.1.6
+  savim: 1.1.7
   size-limit: 8.2.4
   ts-jest: ^29.0.5
   tsdx: 0.14.1
@@ -23,7 +23,7 @@ specifiers:
   typescript: 5.0.2
 
 dependencies:
-  savim: 1.1.6
+  savim: 1.1.7
 
 devDependencies:
   '@jest/globals': 29.5.0
@@ -8788,8 +8788,8 @@ packages:
       - supports-color
     dev: true
 
-  /savim/1.1.6:
-    resolution: {integrity: sha512-wvc4Lo62Fc7FAunClRwJF+koCQMQGJk/6CGnWPostngMVjhOaaKhRBM/p7noKpL8qJbtYcLA7Az1W48YM+Khdw==}
+  /savim/1.1.7:
+    resolution: {integrity: sha512-y3Dc4nk+AN2hM3nZBlNeiGGs32ea9/P5IXjgXLmYvhKTjRHj/GrDJnmN0pKRM6Tm1JveNuJwEhHsI5/CEOtzbw==}
     engines: {node: '>=10'}
     dependencies:
       '@types/node': 18.15.0
