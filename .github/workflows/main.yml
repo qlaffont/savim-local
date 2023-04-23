@@ -53,7 +53,7 @@ jobs:
       - run: chmod -R 777 test && pnpm test
         env:
           LOCAL_APIKEY: ${{ secrets.LOCAL_APIKEY }}
-      - uses: paambaati/codeclimate-action@v3.2.0
+      - uses: paambaati/codeclimate-action@v4.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
