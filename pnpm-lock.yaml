@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   savim:
-    specifier: 1.2.12
-    version: 1.2.12
+    specifier: 1.2.13
+    version: 1.2.13
 
 devDependencies:
   '@jest/globals':
@@ -9232,8 +9232,8 @@ packages:
       - supports-color
     dev: true
 
-  /savim@1.2.12:
-    resolution: {integrity: sha512-fLKr+qYy7sZ5KwiuSowzzBz2T73T/zq5Q/zVIahVUD7usYPMVpC3xGj/hBy0mslpgPaAkA2PwGJ9wK1N2keSyA==}
+  /savim@1.2.13:
+    resolution: {integrity: sha512-MsKI4VARegbBX+VODSGnrYENTE9R9RjY6VQcSaF9SlVwqu16RFIm04Lm4MQNGLRQBAcFuwwiUHd8hKPF+ha/NA==}
     engines: {node: '>=10'}
     dependencies:
       '@types/node': 18.15.0
