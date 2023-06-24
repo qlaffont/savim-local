@@ -78,6 +78,6 @@
     "typescript": "5.1.3"
   },
   "dependencies": {
-    "savim": "1.2.25"
+    "savim": "1.2.27"
   }
 }
