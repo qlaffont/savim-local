@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   savim:
-    specifier: 1.2.58
-    version: 1.2.58
+    specifier: 1.2.60
+    version: 1.2.60
 
 devDependencies:
   '@jest/globals':
@@ -9475,8 +9475,8 @@ packages:
       - supports-color
     dev: true
 
-  /savim@1.2.58:
-    resolution: {integrity: sha512-Y/T1BCg3u+nr8BXavyuDequcxiga92Ve9dfi08kdgOBngXcO3nONUsyg5T4BOmx6MPJP0ioDsKPLpTARhWfGow==}
+  /savim@1.2.60:
+    resolution: {integrity: sha512-1QWY1+iPWabr3NoyGJKpVr5I5DuucqQOVekV7reuVzqvPOdX9axW6/xOUXT99HduNcARg5NglSrZ7hMMNHcO7Q==}
     engines: {node: '>=10'}
     dependencies:
       '@types/node': 18.15.0
