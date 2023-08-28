@@ -29,15 +29,15 @@
     "access": "public"
   },
   "name": "savim-local",
-  "author": "flexper",
+  "author": "qlaffont",
   "module": "dist/savim-local.esm.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/flexper/savim-local.git"
+    "url": "https://github.com/qlaffont/savim-local.git"
   },
   "bugs": {
-    "url": "https://github.com/flexper/savim-local/issues",
-    "email": "contact@flexper.fr"
+    "url": "https://github.com/qlaffont/savim-local/issues",
+    "email": "contact@qlaffont.com"
   },
   "size-limit": [
     {
