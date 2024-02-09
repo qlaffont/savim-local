@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   savim:
-    specifier: 1.2.72
-    version: 1.2.72
+    specifier: 1.2.75
+    version: 1.2.75
 
 devDependencies:
   '@jest/globals':
@@ -2421,15 +2421,10 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/node@18.15.0:
-    resolution: {integrity: sha512-z6nr0TTEOBGkzLGmbypWOGnpSpSIBorEhC4L+4HeQ2iezKCi4f77kyslRwvHeNitymGQ+oFyIWGP96l/DPSV9w==}
-    dev: false
-
   /@types/node@20.11.17:
     resolution: {integrity: sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==}
     dependencies:
       undici-types: 5.26.5
-    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -9801,11 +9796,11 @@ packages:
       - supports-color
     dev: true
 
-  /savim@1.2.72:
-    resolution: {integrity: sha512-wKmKA/Ic2XCCRKo1/Zriuqv2PWicJi95L7dfyYWK1vHFIUem/hyhKEvFxXhsMedyHfYB4M9vdCZkMuPXVk7kvA==}
+  /savim@1.2.75:
+    resolution: {integrity: sha512-Jpa2+NhI1D18qTYAb00bBrfXGZP/QGegj12lG1LWQCD8W9T8PecfY7uy3bJ21acaYr+EmqfUOE4Q83GsvAsnfw==}
     engines: {node: '>=10'}
     dependencies:
-      '@types/node': 18.15.0
+      '@types/node': 20.11.17
       pino: 8.10.0
     dev: false
 
@@ -10940,7 +10935,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-    dev: true
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
