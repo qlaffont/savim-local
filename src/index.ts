@@ -87,13 +87,13 @@ export class SavimLocalProvider implements SavimProviderInterface {
     let data = await readFile(
       join(this.config.rootFolderPath, filenameWithPath),
       {
-        encoding: 'base64',
+        // encoding: 'base64',
         ...params,
       },
     );
 
     if (Buffer.isBuffer(data)) {
-      data = data.toString('base64');
+      data = data.toString();
     }
 
     return data;
