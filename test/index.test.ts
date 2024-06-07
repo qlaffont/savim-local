@@ -124,12 +124,7 @@ describe('Savim Local', () => {
 
     await writeFile(fullPath, fileContent);
 
-    expect(
-      Buffer.from(
-        (await savim.getFile(fileName)) as string,
-        'base64',
-      ).toString(),
-    ).toEqual(fileContent);
+    expect(await savim.getFile(fileName)).toEqual(fileContent);
 
     await rm(fullPath);
   });
