@@ -64,5 +64,5 @@
   "dependencies": {
     "savim": "1.2.197"
   },
-  "packageManager": "pnpm@9.12.2"
+  "packageManager": "pnpm@9.12.3"
 }
