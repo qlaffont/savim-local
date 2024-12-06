@@ -62,7 +62,7 @@
     "typescript": "5.5.3"
   },
   "dependencies": {
-    "savim": "1.2.205"
+    "savim": "1.2.206"
   },
   "packageManager": "pnpm@9.15.0"
 }
