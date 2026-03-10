@@ -1,0 +1,6 @@
+[test]
+coverage = true
+
+[install]
+optional = false
+peer = false

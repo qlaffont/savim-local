@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
   access,
   constants,
@@ -9,14 +9,14 @@ import {
   writeFile,
 } from 'fs/promises';
 import path from 'path';
-const Readable = require('stream').Readable;
+import { Readable } from 'stream';
 import { Savim } from 'savim';
 
 import { SavimLocalProvider, SavimLocalProviderConfig } from '../src';
 
 describe('Savim Local', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    mock.restore();
   });
 
   it('should be Defined', () => {
@@ -38,11 +38,10 @@ describe('Savim Local', () => {
       expect(savim).toBeDefined();
       expect(savim.providers).toBeDefined();
       expect(Object.keys(savim.providers)).toHaveLength(0);
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
+    } catch (_error) {}
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     expect(savim).toBeDefined();
@@ -50,15 +49,22 @@ describe('Savim Local', () => {
     expect(Object.keys(savim.providers)).toHaveLength(1);
   });
 
+  it('isHealthy should return false for non-existent path', async () => {
+    const provider = new SavimLocalProvider({
+      rootFolderPath: '/nonexistent/path/that/does/not/exist',
+    });
+    expect(await provider.isHealthy()).toBe(false);
+  });
+
   it('should be able to upload file (string)', async () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'testupload.txt';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
     const fileContent = 'test';
 
     await savim.uploadFile(fileName, fileContent);
@@ -73,11 +79,11 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'testuploadbuffer.txt';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
     const fileContent = 'test';
 
     await savim.uploadFile(fileName, Buffer.from(fileContent, 'utf8'));
@@ -92,11 +98,11 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'testuploadstream.txt';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
     const fileContent = 'test';
 
     const s = new Readable();
@@ -115,11 +121,11 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'testget.txt';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
     const fileContent = 'test';
 
     await writeFile(fullPath, fileContent);
@@ -129,15 +135,27 @@ describe('Savim Local', () => {
     await rm(fullPath);
   });
 
+  it('should be able to get file returning Buffer (coerced to string)', async () => {
+    const provider = new SavimLocalProvider({ rootFolderPath: import.meta.dir });
+    const fileName = 'testgetbuffer.txt';
+    const fullPath = path.join(import.meta.dir, fileName);
+    await writeFile(fullPath, 'hello');
+    // readFile without encoding returns a Buffer — verify it's coerced to string
+    const result = await provider.getFile(fileName);
+    expect(typeof result).toBe('string');
+    expect(result).toEqual('hello');
+    await rm(fullPath);
+  });
+
   it('should be able to delete file', async () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'testdelete.txt';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
     const fileContent = 'test';
 
     await writeFile(fullPath, fileContent);
@@ -151,11 +169,11 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'foldertocreate';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
 
     await savim.createFolder(fileName);
 
@@ -168,11 +186,11 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileName = 'foldertodelete';
-    const fullPath = path.join(__dirname, fileName);
+    const fullPath = path.join(import.meta.dir, fileName);
 
     await mkdir(fullPath);
     await savim.deleteFolder(fileName);
@@ -183,13 +201,13 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileNameFolder = 'foldertoget';
-    const fullPathFolder = path.join(__dirname, fileNameFolder);
+    const fullPathFolder = path.join(import.meta.dir, fileNameFolder);
     const fileNameFile = 'filenottoget.txt';
-    const fullPathFile = path.join(__dirname, fileNameFile);
+    const fullPathFile = path.join(import.meta.dir, fileNameFile);
 
     await mkdir(fullPathFolder);
     await writeFile(fullPathFile, 'test');
@@ -207,13 +225,13 @@ describe('Savim Local', () => {
     const savim = new Savim();
 
     await savim.addProvider<SavimLocalProviderConfig>(SavimLocalProvider, {
-      rootFolderPath: __dirname,
+      rootFolderPath: import.meta.dir,
     });
 
     const fileNameFolder = 'foldertonotget';
-    const fullPathFolder = path.join(__dirname, fileNameFolder);
+    const fullPathFolder = path.join(import.meta.dir, fileNameFolder);
     const fileNameFile = 'filetoget.txt';
-    const fullPathFile = path.join(__dirname, fileNameFile);
+    const fullPathFile = path.join(import.meta.dir, fileNameFile);
 
     await mkdir(fullPathFolder);
     await writeFile(fullPathFile, 'test');

@@ -2,53 +2,39 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+    name: Build, lint, and test on ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['20.x']
         os: [ubuntu-latest, macOS-latest]
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
+      - uses: oven-sh/setup-bun@v2
 
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4.1.0
-
-      - name: Install deps and build (with cache)
-        run: pnpm install  --no-frozen-lockfile
+      - name: Install deps
+        run: bun install
 
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
 
       - name: Test
-        run: chmod -R 777 test && pnpm test -- --ci --coverage --maxWorkers=2
-        env:
-          LOCAL_APIKEY: ${{ secrets.LOCAL_APIKEY }}
+        run: chmod -R 777 test && bun test --coverage
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
   coverage:
     name: coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - uses: pnpm/action-setup@v4.1.0
-      - run: pnpm install --no-frozen-lockfile
-      - run: chmod -R 777 test && pnpm test
-        env:
-          LOCAL_APIKEY: ${{ secrets.LOCAL_APIKEY }}
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: chmod -R 777 test && bun test --coverage
       - uses: paambaati/codeclimate-action@v9.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}

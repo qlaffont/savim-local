@@ -1,4 +1,4 @@
-import { MakeDirectoryOptions, ObjectEncodingOptions, RmDirOptions } from 'fs';
+import { MakeDirectoryOptions, ObjectEncodingOptions, RmDirOptions } from "fs";
 import {
   access,
   constants,
@@ -9,25 +9,25 @@ import {
   rm,
   rmdir,
   writeFile,
-} from 'fs/promises';
-import { join } from 'path';
-import { SavimProviderInterface } from 'savim';
-import { Stream } from 'stream';
+} from "fs/promises";
+import { join } from "path";
+import { SavimProviderInterface } from "savim";
+import { Stream } from "stream";
 
 type FileSystemFlag =
-  | 'a'
-  | 'ax'
-  | 'a+'
-  | 'ax+'
-  | 'as'
-  | 'as+'
-  | 'r'
-  | 'r+'
-  | 'rs+'
-  | 'w'
-  | 'wx'
-  | 'w+'
-  | 'wx+';
+  | "a"
+  | "ax"
+  | "a+"
+  | "ax+"
+  | "as"
+  | "as+"
+  | "r"
+  | "r+"
+  | "rs+"
+  | "w"
+  | "wx"
+  | "w+"
+  | "wx+";
 
 // https://nodejs.org/api/fs.html#fspromisesreadfilepath-options
 export interface SavimLocalGetFileParam {
@@ -61,36 +61,27 @@ export type SavimLocalGetFoldersParam =
   | BufferEncoding
   | null;
 
-export type SavimLocalGetFilesParam =
-  | ObjectEncodingOptions
-  | BufferEncoding
-  | null;
+export type SavimLocalGetFilesParam = ObjectEncodingOptions | BufferEncoding | null;
 
 export class SavimLocalProvider implements SavimProviderInterface {
-  name = 'local';
+  name = "local";
 
   constructor(public config: SavimLocalProviderConfig) {}
 
-  async isHealthy() {
+  async isHealthy(): Promise<boolean> {
     try {
-      await access(
-        this.config.rootFolderPath,
-        constants.R_OK | constants.W_OK | constants.F_OK,
-      );
+      await access(this.config.rootFolderPath, constants.R_OK | constants.W_OK | constants.F_OK);
       return true;
     } catch {
       return false;
     }
   }
 
-  async getFile(filenameWithPath: string, params?: SavimLocalGetFileParam) {
-    let data = await readFile(
-      join(this.config.rootFolderPath, filenameWithPath),
-      {
-        // encoding: 'base64',
-        ...params,
-      },
-    );
+  async getFile(filenameWithPath: string, params?: SavimLocalGetFileParam): Promise<string> {
+    let data = await readFile(join(this.config.rootFolderPath, filenameWithPath), {
+      // encoding: 'base64',
+      ...params,
+    });
 
     if (Buffer.isBuffer(data)) {
       data = data.toString();
@@ -103,31 +94,21 @@ export class SavimLocalProvider implements SavimProviderInterface {
     filenameWithPath: string,
     content: string | Buffer | Stream,
     params?: SavimLocalUploadFileParam,
-  ) {
-    return writeFile(
-      join(this.config.rootFolderPath, filenameWithPath),
-      content,
-      {
-        ...params,
-      },
-    );
+  ): Promise<void> {
+    return writeFile(join(this.config.rootFolderPath, filenameWithPath), content, {
+      ...params,
+    });
   }
 
-  async deleteFile(
-    filenameWithPath: string,
-    params?: SavimLocalDeleteFileParam,
-  ) {
+  async deleteFile(filenameWithPath: string, params?: SavimLocalDeleteFileParam): Promise<void> {
     return rm(join(this.config.rootFolderPath, filenameWithPath), params);
   }
 
-  async createFolder(path: string, params: SavimLocalCreateFolderParam) {
-    return mkdir(join(this.config.rootFolderPath, path), params);
+  async createFolder(path: string, params: SavimLocalCreateFolderParam): Promise<void> {
+    await mkdir(join(this.config.rootFolderPath, path), params);
   }
 
-  async deleteFolder(
-    path: string,
-    params: SavimLocalDeleteFolderParam,
-  ): Promise<void> {
+  async deleteFolder(path: string, params: SavimLocalDeleteFolderParam): Promise<void> {
     return rmdir(join(this.config.rootFolderPath, path), params);
   }
 
@@ -135,18 +116,13 @@ export class SavimLocalProvider implements SavimProviderInterface {
     return (await lstat(path)).isDirectory();
   }
 
-  async getFolders(
-    path: string,
-    params: SavimLocalGetFoldersParam,
-  ): Promise<string[]> {
+  async getFolders(path: string, params: SavimLocalGetFoldersParam): Promise<string[]> {
     const list = await readdir(join(this.config.rootFolderPath, path), params);
 
     return (
       await Promise.all(
         list.map(async (itemPath) =>
-          (await this.checkIfPathIsFolder(
-            join(this.config.rootFolderPath, itemPath),
-          ))
+          (await this.checkIfPathIsFolder(join(this.config.rootFolderPath, itemPath)))
             ? join(path, itemPath)
             : undefined,
         ),
@@ -154,18 +130,13 @@ export class SavimLocalProvider implements SavimProviderInterface {
     ).filter((p) => p !== undefined) as string[];
   }
 
-  async getFiles(
-    path: string,
-    params: SavimLocalGetFoldersParam,
-  ): Promise<string[]> {
+  async getFiles(path: string, params: SavimLocalGetFoldersParam): Promise<string[]> {
     const list = await readdir(join(this.config.rootFolderPath, path), params);
 
     return (
       await Promise.all(
         list.map(async (itemPath) =>
-          (await this.checkIfPathIsFolder(
-            join(this.config.rootFolderPath, itemPath),
-          ))
+          (await this.checkIfPathIsFolder(join(this.config.rootFolderPath, itemPath)))
             ? undefined
             : join(path, itemPath),
         ),
